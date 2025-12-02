@@ -1,0 +1,8 @@
+<html>
+	<body bgcolor="Peach">
+		<form action="./deleteship" method="post">
+			Enter ShipID:<input type="text" name="shipID"/><br/>
+			<button type="submit">Delete Ship</button>
+		</form>
+	</body>
+</html>			

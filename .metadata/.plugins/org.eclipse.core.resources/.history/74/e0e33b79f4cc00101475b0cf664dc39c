@@ -1,0 +1,43 @@
+package com.example.demo.bean;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name="manager")
+public class ManagerBean {
+
+	@Id
+	@GeneratedValue
+	private int mid;
+	@Column
+	private String mname;
+	@Column
+	private String deptname;
+	@Column
+	private String location;
+	public int getMid() {
+		return mid;
+	}
+	public void setMid(int mid) {
+		this.mid = mid;
+	}
+	public String getMname() {
+		return mname;
+	}
+	public void setMname(String mname) {
+		this.mname = mname;
+	}
+	public String getDeptname() {
+		return deptname;
+	}
+	public void setDeptname(String deptname) {
+		this.deptname = deptname;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
+}

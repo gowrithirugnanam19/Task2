@@ -1,0 +1,12 @@
+<html>
+ <body bgcolor="Grey">
+    <form action="./updateShip" method="post">
+        <!-- ShipID to identify the ship to update -->
+        Enter ShipID to Update:<input type="text" name="shipID"/><br/>
+        Enter ShipName:<input type="text" name="shipName"/><br/>
+        Enter SeatingCapacity:<input type="text" name="seatingCapacity"/><br/>
+        Enter ReservationCapacity:<input type="text" name="reservationCapacity"/><br/>
+        <button type="submit">Update Ship</button>
+    </form>
+ </body>
+</html>

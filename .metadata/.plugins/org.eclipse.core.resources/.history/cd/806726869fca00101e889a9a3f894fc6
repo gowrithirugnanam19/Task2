@@ -1,0 +1,45 @@
+package com.example.web.dao;
+import com.example.web.controller.EmployeeController;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.example.web.bean.EmployeeBean;
+
+@Repository
+public class EmployeeDao {
+
+    private final EmployeeController employeeController;
+@Autowired
+private SessionFactory sessionFactory;
+    EmployeeDao(EmployeeController employeeController) {
+        this.employeeController = employeeController;
+    }
+public int addEmployee(EmployeeBean eb) {
+	Session s=sessionFactory.openSession();
+	Transaction t=s.beginTransaction();
+	if(eb!=null) {
+		s.persist(eb);
+		t.commit();
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+public int updateEmployee(EmployeeBean eb) {
+	Session s=sessionFactory.openSession();
+	Transaction t=s.beginTransaction();
+	if(eb!=null) {
+		s.merge(eb);
+		t.commit();
+	    System.out.println("Session Updated Successfully");
+	    return 1;
+	}
+	else {
+		return 0;
+	}
+}
+}

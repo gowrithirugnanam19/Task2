@@ -1,0 +1,28 @@
+package com.example.spring_web.service;
+
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.example.spring_web.bean.ShipBean;
+import com.example.spring_web.dao.ShipDAO;
+
+@Service
+public class ShipService {
+  @Autowired   //automatically create object
+  private ShipDAO sdao;
+  // Add a new ship
+  public int addShip(ShipBean sb) {
+     return sdao.addShip(sb);
+  }
+  public int updateShip(ShipBean sb) {
+	  return sdao.updateShip(sb);
+  }
+  public int deleteShip(String shipID) {
+	  return sdao.deleteShip(shipID);
+  }
+  public ArrayList<ShipBean> selectAllShips()
+  {
+  return sdao.selectAllShips();
+  }
+}

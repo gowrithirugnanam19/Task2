@@ -1,0 +1,36 @@
+package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import com.example.bean.EmployeeBean;
+import com.example.service.EmployeeService;
+@SpringBootApplication 
+public class SpringMaven {
+
+    private final EmployeeService employeeService;
+
+    SpringMaven(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+public static void main(String[] args) {
+	
+//	SpringApplication.run(SpringMaven.class,args);
+//	System.out.println("Welcome to Spring Maven");
+	
+	ConfigurableApplicationContext ctx=SpringApplication.run(SpringMaven.class,args);
+	//EmployeeBean eb=ctx.getBean(EmployeeBean.class); //without specifying values in the @component
+	EmployeeBean eb=(EmployeeBean)ctx.getBean("eb");  //with specifying reference variables in the @component
+	EmployeeService eserv=(EmployeeService)ctx.getBean(EmployeeService.class);
+	eb.setEid(105);
+//	eb.setEname("vijay");
+//	eb.setEsal(65000);
+	//System.out.println(eserv.addEmployee(eb)+"record inserted successfully");
+	//System.out.println(eserv.updateEmployee(eb)+"record updated successfully");
+	System.out.println(eserv.deleteEmployee(eb)+"record deleted successfully");
+	//System.out.println(eb.getEid()+" "+eb.getEname()+" "+eb.getEsal());
+//	EmployeeBean eb2=(EmployeeBean)ctx.getBean("eb");
+//	System.out.println(eb2.getEid()+" "+eb2.getEname()+" "+eb2.getEsal());
+}
+}

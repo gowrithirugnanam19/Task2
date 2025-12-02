@@ -1,0 +1,16 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.example.spring_web.bean.ShipBean"%>
+<html>
+	<body bgcolor="green">
+ <%ArrayList<ShipBean> all= (ArrayList<ShipBean>)request.getAttribute("aaa");%>
+<table border="4">
+ <tr><th>ShipID</th><th>ShipName</th><th>SeatingCapacity</th><th>ReservationCapacity</th></tr>
+ <%
+ for(ShipBean sb:all)
+ {
+ %>
+ <tr><td><%=sb.getShipID()%></td><td><%=sb.getShipName()%></td><td><%=sb.getSeatingCapacity()%></td><td><%=sb.getReservationCapacity()%></td></tr>
+ <%}%>
+ </table>
+ </body>
+ </html>

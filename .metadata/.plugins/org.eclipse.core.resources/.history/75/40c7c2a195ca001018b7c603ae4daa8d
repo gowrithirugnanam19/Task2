@@ -1,0 +1,9 @@
+<html>
+	<body bgcolor="skyblue">
+		<form action="./addEmp">
+			Enter Employee Name:<input type="text" name="ename"/><br/>
+			Enter Employee Salary:<input type="text" name="esal"/><br/>
+			<button type="submit"> Add Employee</button>
+	    </form>
+    </body>
+</html>					

@@ -1,0 +1,46 @@
+package com.example.spring_web.controller;
+
+import java.util.ArrayList;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.example.spring_web.bean.ShipBean;
+
+@RestController
+@RequestMapping("/admin")
+public class AdminController {
+@GetMapping("/welcome")
+public String meth1() {
+	return "<marquee direction='right'> Welcome to SpringBoot Application</marquee>";
+}
+@GetMapping("/data")
+public ArrayList<String> meth2(){
+   ArrayList<String> al=new ArrayList<String>();
+   al.add("Mango");
+   al.add("Guava");
+   return al;
+}
+@GetMapping("/first")
+public ModelAndView meth3() {
+	return new ModelAndView("Login");
+}
+@GetMapping("/validate")
+public ModelAndView meth4(@RequestParam("user")String usr,@RequestParam("pass")String pss) {
+  if(usr.equals("AD-001") && pss.equals("AD-001")) {
+	  return new ModelAndView("AddShip");
+  }
+  else {
+	  return new ModelAndView("Invalid");
+  }
+}
+@PostMapping("/addShip")
+public String meth5(@ModelAttribute("sb")ShipBean sb) {
+	return "<h1>"+sb+"</h1";
+}
+}

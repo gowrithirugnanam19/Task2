@@ -1,0 +1,67 @@
+package com.example.spring_web.dao;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.stereotype.Repository;
+import com.example.spring_web.bean.ShipBean;
+
+@Repository
+public class ShipDAO {
+@Autowired
+private JdbcTemplate jdbcTemplate;
+int i=0;
+  // Add Ship
+ public int addShip(ShipBean sb) {
+   jdbcTemplate.execute("insert into ship values (?, ?, ?, ?)", new PreparedStatementCallback<ShipBean>() {
+        @Override
+        public ShipBean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+          ps.setString(1, sb.getShipID());
+          ps.setString(2, sb.getShipName());
+          ps.setInt(3, sb.getSeatingCapacity());
+          ps.setInt(4, sb.getReservationCapacity());
+          i= ps.executeUpdate();
+          return sb;
+        }
+    });
+   return i;
+  }
+ 
+ public int updateShip(ShipBean sb)
+ {
+ jdbcTemplate.execute("update ship set shipname=?,seatingcapacity=?,reservationcapacity=? where shipid=?",new PreparedStatementCallback<ShipBean>() {
+ @Override
+  public ShipBean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+ ps.setString(1, sb.getShipName());
+ ps.setInt(2, sb.getSeatingCapacity());
+ ps.setInt(3, sb.getReservationCapacity());
+ ps.setString(4,sb.getShipID());
+ i=ps.executeUpdate();
+ return sb;
+ }
+ });
+ return i;
+ }
+ 
+
+public int deleteShip(ShipBean sb) {
+	jdbcTemplate.execute("delete ship set shipname=?,seatingcapacity=?,reservationcapacity=? where shipid=?",new PreparedStatementCallback<ShipBean>() {
+	@Override
+	public ShipBean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException{
+	ps.setString(1, sb.getShipName());
+	ps.setInt(2, sb.getSeatingCapacity());
+	ps.setInt(3, sb.getReservationCapacity());
+	ps.setString(4, sb.getShipID());
+	i=ps.executeUpdate();
+	return sb;
+	}
+	});
+	return i;
+}
+}
+
+ 
+

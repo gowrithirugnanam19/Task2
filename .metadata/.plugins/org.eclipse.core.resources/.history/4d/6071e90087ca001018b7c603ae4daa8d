@@ -1,0 +1,47 @@
+package com.example.spring_web.bean;
+
+import jakarta.persistence.*; //mapping using annotation
+@Entity
+@Table(name="ship101")
+public class ShipBean {
+	@Id         //annotation  generate a value,primary key
+	@GeneratedValue
+private String shipID;
+	@Column  //define different name use(name="new name")
+private String shipName;
+	@Column
+private int seatingCapacity;
+	@Column
+private int reservationCapacity;
+
+public String getShipID() {
+	return shipID;
+}
+public void setShipID(String shipID) {
+	this.shipID = shipID;
+}
+public String getShipName() {
+	return shipName;
+}
+public void setShipName(String shipName) {
+	this.shipName = shipName;
+}
+public int getSeatingCapacity() {
+	return seatingCapacity;
+}
+public void setSeatingCapacity(int seatingCapacity) {
+	this.seatingCapacity = seatingCapacity;
+}
+public int getReservationCapacity() {
+	return reservationCapacity;
+}
+public void setReservationCapacity(int reservationCapacity) {
+	this.reservationCapacity = reservationCapacity;
+}
+@Override
+public String toString() {
+	return "ShipBean [shipID=" + shipID + ", shipName=" + shipName + ", seatingCapacity=" + seatingCapacity
+			+ ", reservationCapacity=" + reservationCapacity + "]";
+}
+
+}

@@ -1,0 +1,122 @@
+//package com.example.spring_web.dao;
+//
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.util.ArrayList;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.dao.DataAccessException;
+//import org.springframework.jdbc.core.JdbcTemplate;
+//import org.springframework.jdbc.core.PreparedStatementCallback;
+//import org.springframework.jdbc.core.RowMapper;
+//import org.springframework.stereotype.Repository;
+//import com.example.spring_web.bean.ShipBean;
+//
+//@Repository
+//public class ShipDAO {
+//@Autowired
+//private JdbcTemplate jdbcTemplate;
+//int i=0;
+//  // Add Ship
+// public int addShip(ShipBean sb) {
+//   jdbcTemplate.execute("insert into ship values (?, ?, ?, ?)", new PreparedStatementCallback<ShipBean>() {
+//        @Override
+//        public ShipBean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+//          ps.setString(1, sb.getShipID());
+//          ps.setString(2, sb.getShipName());
+//          ps.setInt(3, sb.getSeatingCapacity());
+//          ps.setInt(4, sb.getReservationCapacity());
+//          i= ps.executeUpdate();
+//          return sb;
+//        }
+//    });
+//   return i;
+//  }
+// 
+// public int updateShip(ShipBean sb)
+// {
+// jdbcTemplate.execute("update ship set shipname=?,seatingcapacity=?,reservationcapacity=? where shipid=?",new PreparedStatementCallback<ShipBean>() {
+// @Override
+//  public ShipBean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+// ps.setString(1, sb.getShipName());
+// ps.setInt(2, sb.getSeatingCapacity());
+// ps.setInt(3, sb.getReservationCapacity());
+// ps.setString(4,sb.getShipID());
+// i=ps.executeUpdate();
+// return sb;
+// }
+// });
+// return i;
+// }
+// 
+//
+//public int deleteShip(String shipID) {
+//	jdbcTemplate.execute("delete from ship where shipid=?",new PreparedStatementCallback<ShipBean>() {
+//		@Override
+//		 public ShipBean doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+//		ps.setString(1,shipID);
+//		i=ps.executeUpdate();
+//		return null;
+//		}
+//		});
+//		return i;
+//}
+//
+//public ArrayList<ShipBean> selectAllShips()
+//{
+//     ArrayList<ShipBean> all=new ArrayList<ShipBean>();
+//       jdbcTemplate.query("select * from ship", new RowMapper<ShipBean>() {
+//       @Override
+//       public ShipBean mapRow(ResultSet rs, int rowNum) throws SQLException {
+//       ShipBean s=new ShipBean();
+//       s.setShipID(rs.getString(1));
+//       s.setShipName(rs.getString(2));
+//       s.setSeatingCapacity(rs.getInt(3));
+//       s.setReservationCapacity(rs.getInt(4));
+//       all.add(s);
+//     return null;
+//   }
+//  });
+//return all;
+//}
+//}
+//--------------------------------
+
+package com.example.spring_web.dao;
+
+//import java.sql.PreparedStatement;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.util.ArrayList;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.dao.DataAccessException;
+//import org.springframework.jdbc.core.JdbcTemplate;
+//import org.springframework.jdbc.core.PreparedStatementCallback;
+//import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import com.example.spring_web.bean.ShipBean;
+
+@Repository
+public class ShipDAO{
+@Autowired
+private SessionFactory sessionFactory;
+int i=0;
+public int addShip(ShipBean sb) {
+	Session s=sessionFactory.openSession();
+	Transaction t=s.beginTransaction();
+	if(sb!=null) {
+		s.persist(sb);
+		t.commit();
+		return i=1;
+	}
+	else {
+		return i=0;
+	}
+}
+
+}
