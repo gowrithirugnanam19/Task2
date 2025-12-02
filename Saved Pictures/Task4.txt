@@ -1,0 +1,540 @@
+1.Inversion of Control and Deprndency Agency:
+
+
+package com.example;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+	public static void main(String[] args) {
+
+	    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+	    // Constructor injection
+	    UserController controller1 = (UserController) context.getBean("userControllerConstructor");
+	    System.out.println("Constructor: " + controller1.printMessage());
+
+	    // Setter injection
+	    UserController controller2 = (UserController) context.getBean("userControllerSetter");
+	    System.out.println("Setter: " + controller2.printMessage());
+
+	    // Field injection
+	    UserController controller3 = (UserController) context.getBean("userControllerField");
+	    System.out.println("Field: " + controller3.printMessageFromField());
+
+	  }
+}
+
+
+package com.example;
+
+public class MessageService {
+    // Method to return a message
+	public String getMessage() {
+		return "Hello from Message Service!";
+		}
+}
+
+
+
+
+package com.example;
+
+public class UserController {
+	private MessageService messageService;
+	// Default constructor
+	public UserController() {}
+	// Constructor Injection
+	public UserController(MessageService messageService) {
+	this.messageService = messageService;
+	}
+	// Setter Injection
+	public void setMessageService(MessageService messageService) {
+	this.messageService = messageService;
+	}
+	// Field Injection
+	private MessageService fieldMessageService;
+	public void setFieldMessageService(MessageService fieldMessageService) {
+	this.fieldMessageService = fieldMessageService;
+	}
+	// Method to print message
+	public String printMessage() {
+	return messageService.getMessage();
+	}
+	// Method for field-based message service
+	public String printMessageFromField() {
+	return fieldMessageService.getMessage();
+
+	}
+}
+
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+<!-- MessageService Bean -->
+<bean id="messageService" class="com.example.MessageService" />
+<!-- UserController Bean using Constructor Injection -->
+<bean id="userControllerConstructor" class="com.example.UserController">
+<constructor-arg ref="messageService" />
+</bean>
+<!-- UserController Bean using Setter Injection -->
+<bean id="userControllerSetter" class="com.example.UserController">
+<property name="messageService" ref="messageService" />
+</bean>
+<!-- UserController Bean using Field Injection -->
+<bean id="userControllerField" class="com.example.UserController">
+<property name="fieldMessageService" ref="messageService" />
+</bean>
+</beans>
+
+
+
+2.Spring Bean LifeCycle:
+
+package com.example.demo.connection;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackages="com.example")
+public class AppConfig {
+
+}
+
+package com.example.demo.connection;
+
+import org.springframework.stereotype.Component;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+
+@Component
+public class DBConnection{
+  public  DBConnection(){
+     System.out.println("Database Connection: constructor called");
+    }
+  @PostConstruct
+  public void init() {
+      System.out.println("DatabaseConnection: Bean Initialized");
+  }
+
+  public void connect() {
+      System.out.println("DatabaseConnection: Connecting to the database...");
+  }
+  @PreDestroy
+  public void destroy() {
+      System.out.println("DatabaseConnection: Bean Destroyed");
+  }
+
+  public void closeConnection() {
+      System.out.println("DatabaseConnection: Closing the database connection.");
+  }
+}
+
+
+package com.example.demo.connection;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class Main {
+
+	public static void main(String[] args) {
+    
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        DBConnection dbConnection = context.getBean(DBConnection.class);
+        dbConnection.connect();
+        context.close();
+    }
+}
+
+
+3.Spring Boot Starter+ Auto Configuration+ Properties:
+
+package com.example.demo.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class Application {
+   @Autowired
+     private GreetingsService service;
+       public static void main(String[] args) {
+            SpringApplication.run(Application.class, args);
+}
+   @Bean
+        public CommandLineRunner init(ApplicationContext context) {
+            return args -> {
+               System.out.println(service.greet());
+    };       
+} 
+}
+
+
+package com.example.demo.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class GreetingsService {
+
+	@Value("${app.message}")
+    private String msg;
+
+    public String greet() {
+        return "Welcome to Spring Boot! " + msg;
+    }
+}
+
+
+4.Console Level:
+
+package com.example;
+
+public class GreetingController {
+	private GreetingService greetingservice;
+	public GreetingController(GreetingService greetingservice) {
+	this.greetingservice = greetingservice;
+	}
+	public String showMessage() {
+	return greetingservice.getMessage();
+	}
+}
+
+
+package com.example;
+
+public class GreetingService {
+	public String getMessage() {
+		return "Hello from spring console App!";
+		}
+}
+
+
+package com.example;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+	public static void main(String[] args) {
+	    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+	  GreetingController controller=context.getBean(GreetingController.class);
+	  System.out.println(controller.showMessage());
+	  ((ClassPathXmlApplicationContext) context).close();
+	}	
+}
+
+
+5.Spring+DataBase(JPA):
+
+package com.example.demo.bean;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="stu777")
+public class StudentBean {
+@Id
+@GeneratedValue
+private int id;
+@Column
+private String name;
+@Column
+private String course;
+public int getId() {
+	return id;
+}
+public void setId(int id) {
+	this.id = id;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public String getCourse() {
+	return course;
+}
+public void setCourse(String course) {
+	this.course = course;
+}
+}
+
+
+package com.example.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.example.demo.bean.StudentBean;
+import com.example.demo.service.StudentService;
+
+@Controller
+@RequestMapping("/student")
+public class StudentController {
+	@Autowired
+	private StudentService sserv;
+
+	@PostMapping("/addStudent")
+	@ResponseBody
+	public String meth1(@RequestBody StudentBean s) {
+		return "<h1>"+sserv.addStudent(s)+" record inserted successfully</h1>";
+	}
+	
+	@GetMapping("/selectAll")
+	@ResponseBody
+	public List<StudentBean> meth2(){
+		return sserv.selectAll();
+	}
+}
+
+
+package com.example.demo.dao;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.bean.StudentBean;
+
+@Repository
+public interface StudentDao extends JpaRepository<StudentBean,Integer>{
+
+}
+
+
+package com.example.demo.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.bean.StudentBean;
+import com.example.demo.dao.StudentDao;
+
+@Service
+public class StudentService {
+	@Autowired
+	private StudentDao sdao;
+	public int addStudent(StudentBean s) {
+		if(s!=null) {
+			sdao.save(s);
+			return 1;
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public List<StudentBean> selectAll(){
+		return sdao.findAll();
+	}
+}
+
+
+
+
+6.Spring+Hibernate:
+
+package com.example.demo.bean;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="emp")
+public class EmployeeBean {
+
+	@Id
+	@GeneratedValue
+	private int id;
+	@Column
+	private String name;
+	@Column
+	private int salary;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getSalary() {
+		return salary;
+	}
+	public void setSalary(int salary) {
+		this.salary = salary;
+	}
+}
+
+
+
+package com.example.demo.bean;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class EmployeeDAO {
+
+	@Autowired
+    private SessionFactory sessionFactory;
+
+    // Save Employee
+    public void saveEmployee(EmployeeBean e) {
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(e);  // Save or update the employee object
+    }
+
+    // Get Employee by ID
+    public EmployeeBean getEmployeeById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(EmployeeBean.class, id);  // Fetch employee by ID
+    }
+
+    // Get all Employees
+    public List<EmployeeBean> getAllEmployees() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("from Employee", EmployeeBean.class).getResultList();  // Fetch all employees
+    }
+	
+}
+
+
+package com.example.demo.bean;
+
+import com.example.demo.bean.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.List;
+
+public class MainApp {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        // Get EmployeeDAO bean from Spring context
+        EmployeeDAO employeeDAO = context.getBean(EmployeeDAO.class);
+
+        // Save new employees
+        EmployeeBean employee1 = new EmployeeBean();
+        employeeDAO.saveEmployee(employee1);
+
+        EmployeeBean employee2 = new EmployeeBean();
+        employeeDAO.saveEmployee(employee2);
+
+        // Fetch all employees
+        List<EmployeeBean> employees = employeeDAO.getAllEmployees();
+        for (EmployeeBean employee : employees) {
+            System.out.println("Employee ID: " + employee.getId() + ", Name: " + employee.getName() + ", Salary: " + employee.getSalary());
+        }
+
+        // Fetch employee by ID
+        EmployeeBean fetchedEmployee = employeeDAO.getEmployeeById(1);
+        System.out.println("Fetched Employee: " + fetchedEmployee.getName());
+
+        // Close Spring context
+        ((ClassPathXmlApplicationContext) context).close();
+    }
+}
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+    <!-- DataSource Configuration -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/your_database"/>
+        <property name="username" value="root"/>
+        <property name="password" value="password"/>
+    </bean>
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.example.model"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Hibernate Transaction Manager -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- EmployeeDAO Bean -->
+    <bean id="employeeDAO" class="com.example.dao.EmployeeDAO"/>
+
+</beans>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+
+    <!-- JDBC Database connection settings -->
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- JDBC connection pool settings -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/ust</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">pass@word1</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="hibernate.show_sql">true</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Mention annotated class -->
+        <mapping class="com.example.model.Employee"/>
+    </session-factory>
+</hibernate-configuration>
+

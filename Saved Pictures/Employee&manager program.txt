@@ -1,0 +1,255 @@
+EmployeeBean.java
+
+-------------------------------
+
+package com.example.demo.bean;
+
+
+
+import javax.persistence.*;
+
+
+
+
+
+@Entity
+
+@Table(name="emp888")
+
+public class EmployeeBean {
+
+@Id
+
+@GeneratedValue
+
+private int id;
+
+@Column
+
+private String name;
+
+
+
+@Column
+
+private int salary;
+
+
+
+
+
+@OneToOne(cascade = CascadeType.ALL)
+
+@JoinColumn(name = "manager_managername")
+
+private ManagerBean manager;
+
+
+
+public ManagerBean getManager() {
+
+return manager;
+
+}
+
+public void setManager(ManagerBean manager) {
+
+this.manager = manager;
+
+}
+
+public int getId() {
+
+return id;
+
+}
+
+public void setId(int id) {
+
+this.id = id;
+
+}
+
+public String getName() {
+
+return name;
+
+}
+
+public void setName(String name) {
+
+this.name = name;
+
+}
+
+public int getSalary() {
+
+return salary;
+
+}
+
+public void setSalary(int salary) {
+
+this.salary = salary;
+
+}
+
+
+
+}
+
+ManagerBean.java
+
+-----------------------------
+
+package com.example.demo.bean;
+
+
+
+import javax.persistence.*;
+
+
+
+@Entity
+
+@Table(name="manager")
+
+public class ManagerBean {
+
+@Id
+
+@GeneratedValue
+
+private int managerId;
+
+
+
+@Column
+
+private String managerName;
+
+
+
+@Column
+
+private String departmentName;
+
+@Column
+
+private String location;
+
+public int getManagerId() {
+
+return managerId;
+
+}
+
+public void setManagerId(int managerId) {
+
+this.managerId = managerId;
+
+}
+
+public String getManagerName() {
+
+return managerName;
+
+}
+
+public void setManagerName(String managerName) {
+
+this.managerName = managerName;
+
+}
+
+public String getDepartmentName() {
+
+return departmentName;
+
+}
+
+public void setDepartmentName(String departmentName) {
+
+this.departmentName = departmentName;
+
+}
+
+public String getLocation() {
+
+return location;
+
+}
+
+public void setLocation(String location) {
+
+this.location = location;
+
+}
+
+
+
+}
+
+Main.java
+
+-------------------
+
+package com.example.demo;
+
+
+
+import org.hibernate.Session;
+
+import org.hibernate.SessionFactory;
+
+import org.hibernate.Transaction;
+
+import org.hibernate.cfg.Configuration;
+
+
+
+import com.example.demo.bean.EmployeeBean;
+
+import com.example.demo.bean.ManagerBean;
+
+
+
+public class Main
+
+{
+
+public static void main(String[] args) {
+
+Configuration cfg=new Configuration().configure("hibernate.cfg.xml");
+
+SessionFactory sf=cfg.buildSessionFactory();
+
+EmployeeBean eb=new EmployeeBean();
+
+eb.setName("Karthik");
+
+eb.setSalary(88000);
+
+ManagerBean mb=new ManagerBean();
+
+eb.setManager(mb);
+
+eb.getManager().setManagerName(eb.getName());
+
+eb.getManager().setDepartmentName("Sales");
+
+eb.getManager().setLocation("Trivandrum");
+
+Session s=sf.openSession();
+
+Transaction t=s.beginTransaction();
+
+s.save(eb);
+
+System.out.println("Session Stored successfully....");
+
+t.commit();
+
+}
+
+}
